@@ -9,7 +9,9 @@ class Walls
     # bottom wall
     wall_shape = CP::Shape::Segment.new(CP::Body.new_static(), CP::Vec2.new(0.0-PADDING, height), CP::Vec2.new(width+PADDING, height), THICKNESS)
     wall_shape.collision_type = :wall
+    # friction
     wall_shape.u = 0.5
+    # elasticity
     wall_shape.e = 0.0
     space.add_static_shape(wall_shape)
 
