@@ -1,6 +1,25 @@
 # creates a single platform
 class Platform
-  def initialize(space, x, y, image_loc = "replace me")
-    image = Gosu::Image.new()
+  def initialize(window, x, y, image_loc = "replace me")
+    space = window.space
+    @tileset = Gosu::Image.load_tiles(window, image_loc, 60, 60, true)
+
+    hh = @tileset[0].height / 2 # half height
+    hw = @tileset[0].width / 2 # half width
+    mass = 2 * hh * hw / 712 # TODO : remove magic numbers
+    #shape_array = [CP::Vec2.new(-hh, -hw), CP::Vec2.new(-hh, hw), CP::Vec2.new(hh, hw), CP::Vec2.new(hh, -hw)]
+    shape_array = [CP::Vec2.new(0,0), CP::Vec2.new(0, 2 * hw), CP::Vec2.new(2 * hh, 2 * hw), CP::Vec2.new(2 * hh, 0)]
+    @body = CP::Body.new(mass, CP.moment_for_poly(mass, shape_array, CP::Vec2.new(0,0)))
+    #@body = CP::Body.new_static()
+    @body.p = CP::Vec2.new(x, y)
+    shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(0,0))
+    shape.collision_type = :platform
+
+    space.add_body(@body)
+    space.add_shape(shape)
+  end
+
+  def draw
+    @tileset[0].draw(@body.p.x, @body.p.y, ZOrder::Objects)
   end
 end

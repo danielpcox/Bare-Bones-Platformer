@@ -3,6 +3,7 @@ require 'chipmunk'
 
 require './objects/player'
 require './objects/walls'
+require './objects/platform'
 
 require './lib/constants'
 require './lib/utility'
@@ -24,6 +25,9 @@ class GameWindow < Gosu::Window
 
     # create walls
     Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # DEBUG : create a platform
+    @platform = Platform.new(self, 500, 500, 'media/dirtblocks.png')
   end
 
   def update
@@ -41,6 +45,7 @@ class GameWindow < Gosu::Window
 
   def draw
     @background_image.draw(0,0,ZOrder::Background)
+    @platform.draw
   end
 
   # Escape closes the game
