@@ -32,10 +32,16 @@ class GameWindow < Gosu::Window
     #Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
     Walls.new(self, WORLD_WIDTH, WORLD_HEIGHT)
 
-    # DEBUG : create a platform
-    @platform = Platform.new(self, 300, 500, 'media/dirtblocks.png')
+    @platforms = Array.new
 
-    @player = Player.new(self, 70, 500)
+    # DEBUG : create a bunch of platforms
+    20.times do 
+      platform = Platform.new(self, 50+rand(900), 50+rand(700), 'media/dirtblocks.png')
+      @platforms << platform
+    end
+    @platforms << Platform.new(self, 0, 60, 'media/dirtblocks.png')
+
+    @player = Player.new(self, 0, 0)
     @left = @right = @jump = false
   end
 
@@ -70,7 +76,7 @@ class GameWindow < Gosu::Window
 
   def draw
     @background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
-    @platform.draw(@camera)
+    @platforms.each {|p| p.draw(@camera) }
     @player.draw(@camera)
   end
 
