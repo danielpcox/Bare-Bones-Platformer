@@ -22,7 +22,7 @@ class Player
     @body.p = CP::Vec2.new(x, y)
     shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(-w/2,-h))
     #shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(0,0))
-    shape.collision_type = :platform
+    shape.collision_type = :player
 
     space.add_body(@body)
     space.add_shape(shape)
