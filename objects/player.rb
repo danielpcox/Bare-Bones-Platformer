@@ -16,7 +16,6 @@ class Player
     h = @standing.height
     w = @standing.width
     mass = h * w / 1000
-    shape_array = [CP::Vec2.new(0,0), CP::Vec2.new(0, h), CP::Vec2.new(w, h), CP::Vec2.new(w, 0)]
     @body = CP::Body.new(mass, CP::INFINITY)
     @body.p = CP::Vec2.new(x, y)
     @body.v_limit = PLAYER_MAX_V
@@ -80,7 +79,7 @@ class Player
   end
   
   def draw(camera)
-    @standing.draw(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Player)
+    @standing.draw_rot(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Player, @body.a)
   end
   
 end
