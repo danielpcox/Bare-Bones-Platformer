@@ -66,7 +66,7 @@ class Player
   end
 
   def spin_around_left
-    @body.apply_force(CP::Vec2.new(-110.0, 0.0),CP::Vec2.new(0,0.0))
+    @body.apply_force(CP::Vec2.new(-300.0, 0.0),CP::Vec2.new(0,0.0))
   end
 
   def go_right
@@ -78,7 +78,7 @@ class Player
   end
 
   def spin_around_right
-    @body.apply_force(CP::Vec2.new(110.0, 0.0),CP::Vec2.new(0,0.0))
+    @body.apply_force(CP::Vec2.new(300.0, 0.0),CP::Vec2.new(0,0.0))
   end
 
   def go_up
@@ -127,10 +127,8 @@ class Player
   
   def draw(camera)
     if @dir == :left then
-      offs_x = -25
       factor = 1.0
     else
-      offs_x = 25
       factor = -1.0
     end
     @cur_image.draw_rot(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Player, @body.a, 0.5, 0.5, factor)
