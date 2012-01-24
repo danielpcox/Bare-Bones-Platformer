@@ -7,6 +7,7 @@ require './objects/platform'
 
 require './lib/constants'
 require './lib/utility'
+require './lib/camera'
 include Utility
 
 class GameWindow < Gosu::Window
@@ -22,30 +23,58 @@ class GameWindow < Gosu::Window
     # Chipmunk space setup
     @space = CP::Space.new
     @space.gravity = Vec2.new(0.0, 9.8)
+    @space.damping = 0.998
+
+    # camera setup
+    @camera = Camera.new(0,0)
 
     # create walls
-    Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
+    #Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
+    Walls.new(self, WORLD_WIDTH, WORLD_HEIGHT)
 
     # DEBUG : create a platform
-    @platform = Platform.new(self, 500, 500, 'media/dirtblocks.png')
+    @platform = Platform.new(self, 300, 500, 'media/dirtblocks.png')
+
+    @player = Player.new(self, 70, 500)
+    @left = @right = @jump = false
   end
 
   def update
     # for each main update, we actually step the physics engine several times
 
     # ... control stuff that doesn't directly affect physics ...
+    @camera.x = @player.body.p.x
 
     CP_SUBSTEPS.times do
 
       # ... control stuff that affects physics ...
+      if (button_down? Gosu::KbLeft) && !@left
+        @player.left
+        @left = true
+      elsif !(button_down? Gosu::KbLeft) && @left
+        @left = false
+      end
+      if (button_down? Gosu::KbRight) && !@right
+        @player.right
+        @right = true
+      elsif !(button_down? Gosu::KbRight) && @right
+        @right = false
+      end
+      if (button_down? Gosu::KbUp) && !@jump
+        @player.jump
+        @jump = true
+      elsif !(button_down? Gosu::KbUp) && @jump
+        @jump = false
+      end
 
       @space.step(@dt)
     end
   end
 
   def draw
-    @background_image.draw(0,0,ZOrder::Background)
-    @platform.draw
+    @background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
+    @platform.draw(@camera)
+    @player.draw(@camera)
   end
 
   # Escape closes the game
