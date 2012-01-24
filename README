@@ -1,1 +1,2 @@
-Source code for Project Fantastic
+A little bare-bones platformer written in Ruby using the Gosu and Chipmunk gems.
+Images jacked from the Gosu examples.
