@@ -51,6 +51,14 @@ class GameWindow < Gosu::Window
       @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
     end
 
+    if (@player.body.p.y - SCREEN_HEIGHT / 2 < 0)
+      @camera.y = 0
+    elsif (@player.body.p.y + SCREEN_HEIGHT / 2 > WORLD_HEIGHT)
+      @camera.y = WORLD_HEIGHT - SCREEN_HEIGHT
+    else
+      @camera.y = @player.body.p.y - SCREEN_HEIGHT / 2
+    end
+
     CP_SUBSTEPS.times do
 
       # ... control stuff that affects physics ...
