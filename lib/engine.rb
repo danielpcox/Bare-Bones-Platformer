@@ -43,7 +43,13 @@ class GameWindow < Gosu::Window
     # for each main update, we actually step the physics engine several times
 
     # ... control stuff that doesn't directly affect physics ...
-    @camera.x = @player.body.p.x
+    if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
+      @camera.x = 0
+    elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
+      @camera.x = WORLD_WIDTH - SCREEN_WIDTH
+    else
+      @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
+    end
 
     CP_SUBSTEPS.times do
 
