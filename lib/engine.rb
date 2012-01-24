@@ -22,8 +22,8 @@ class GameWindow < Gosu::Window
 
     # Chipmunk space setup
     @space = CP::Space.new
-    @space.gravity = Vec2.new(0.0, 9.8)
-    @space.damping = 0.998
+    #@space.gravity = Vec2.new(0.0, 9.8)
+    @space.gravity = Vec2.new(0.0, 19.6)
 
     # camera setup
     @camera = Camera.new(0,0)
@@ -62,24 +62,7 @@ class GameWindow < Gosu::Window
     CP_SUBSTEPS.times do
 
       # ... control stuff that affects physics ...
-      if (button_down? Gosu::KbLeft) && !@left
-        @player.left
-        @left = true
-      elsif !(button_down? Gosu::KbLeft) && @left
-        @left = false
-      end
-      if (button_down? Gosu::KbRight) && !@right
-        @player.right
-        @right = true
-      elsif !(button_down? Gosu::KbRight) && @right
-        @right = false
-      end
-      if (button_down? Gosu::KbUp) && !@jump
-        @player.jump
-        @jump = true
-      elsif !(button_down? Gosu::KbUp) && @jump
-        @jump = false
-      end
+      @player.update((button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
 
       @space.step(@dt)
     end

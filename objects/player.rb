@@ -1,4 +1,6 @@
 class Player
+  PLAYER_MAX_V = 100.0
+
   attr_reader :body
 
   def initialize(window, x, y)
@@ -17,10 +19,15 @@ class Player
     shape_array = [CP::Vec2.new(0,0), CP::Vec2.new(0, h), CP::Vec2.new(w, h), CP::Vec2.new(w, 0)]
     #shape_array = [CP::Vec2.new(-hh, -hw), CP::Vec2.new(-hh, hw), CP::Vec2.new(hh, hw), CP::Vec2.new(hh, -hw)]
     #CP::recenter_poly(shape_array)
-    @body = CP::Body.new(mass, CP.moment_for_poly(mass, shape_array, CP::Vec2.new(0,0)))
+    #@body = CP::Body.new(mass, CP.moment_for_poly(mass, shape_array, CP::Vec2.new(0,0)))
+    @body = CP::Body.new(mass, CP.moment_for_circle(mass, 50.0, 0.0, CP::Vec2.new(0,0)))
     #@body = CP::Body.new_static()
     @body.p = CP::Vec2.new(x, y)
-    shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(-w/2,-h))
+    @body.v_limit = PLAYER_MAX_V
+    #shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(-w/2,-h))
+    shape = CP::Shape::Circle.new(@body, 25.0, CP::Vec2.new(0.0,-h/2))
+    shape.u = 0.9 # friction coefficient
+    shape.e = 0.0 # elasticity
     #shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(0,0))
     shape.collision_type = :player
 
@@ -32,16 +39,53 @@ class Player
     @cur_image = @standing    
   end
 
-  def left
-    @body.apply_impulse(CP::Vec2.new(-100.0, 0.0),CP::Vec2.new(0,0.0))
+  def go_left
+    @body.apply_force(CP::Vec2.new(-50.0, 0.0),CP::Vec2.new(0,0.0))
   end
 
-  def right
-    @body.apply_impulse(CP::Vec2.new(100.0, 0.0),CP::Vec2.new(0,0))
+  def spin_around_left
+    @body.apply_force(CP::Vec2.new(-110.0, 0.0),CP::Vec2.new(0,0.0))
   end
 
-  def jump
+  def go_right
+    @body.apply_force(CP::Vec2.new(50.0, 0.0),CP::Vec2.new(0,0))
+  end
+
+  def spin_around_right
+    @body.apply_force(CP::Vec2.new(110.0, 0.0),CP::Vec2.new(0,0.0))
+  end
+
+  def go_up
     @body.apply_impulse(CP::Vec2.new(0.0, -200.0), CP::Vec2.new(0,0))
+  end
+
+  def update(left_pressed, right_pressed, up_pressed)
+    going_left = (@body.v.x < 0)
+    @body.reset_forces
+    if left_pressed
+      if !going_left
+        spin_around_left
+      else
+        go_left
+      end
+    end
+    if right_pressed
+      if going_left
+        spin_around_right
+      else
+        go_right
+      end
+    end
+    if up_pressed && !@up_still_pressed
+      go_up
+      @up_still_pressed = true
+    end
+    @up_still_pressed = false if !up_pressed
+
+    if !left_pressed && !right_pressed
+      @body.v += CP::Vec2.new(-@body.v.x / 100, 0.0)
+      @body.v.x = 0.0 if @body.v.x.abs < 2.0
+    end
   end
   
   def draw(camera)
