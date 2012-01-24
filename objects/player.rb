@@ -7,7 +7,7 @@ class Player
     @@off_ground
   end
 
-  PLAYER_MAX_V = 100.0
+  PLAYER_MAX_V = 75.0
 
   attr_reader :body
 
@@ -20,6 +20,7 @@ class Player
     # Load all animation frames
     @standing, @walk1, @walk2, @jump =
       *Gosu::Image.load_tiles(window, "media/player.png", 50, 50, false)
+    @cur_image = @standing
 
     mass = @standing.height * @standing.width / 200
     @body = CP::Body.new(mass, CP::INFINITY)
@@ -84,10 +85,21 @@ class Player
     @body.apply_impulse(CP::Vec2.new(0.0, -200.0), CP::Vec2.new(0,0))
   end
 
-  def update(left_pressed, right_pressed, up_pressed)
+  def update(milliseconds, left_pressed, right_pressed, up_pressed)
+    if (@body.v.x.abs < 5.0)
+      @cur_image = @standing
+    else
+      @cur_image = (milliseconds / 175 % 2 == 0) ? @walk1 : @walk2
+    end
+
+    if (Player.off_ground)
+      @cur_image = @jump
+    end
+
     going_left = (@body.v.x < 0)
     @body.reset_forces
     if left_pressed
+      @dir = :left
       if !going_left
         spin_around_left
       else
@@ -95,6 +107,7 @@ class Player
       end
     end
     if right_pressed
+      @dir = :right
       if going_left
         spin_around_right
       else
@@ -104,6 +117,7 @@ class Player
     if up_pressed && !Player.off_ground
       go_up
     end
+    @dir = :up if Player.off_ground
 
     if !left_pressed && !right_pressed
       @body.v += CP::Vec2.new(-@body.v.x / 100, 0.0)
@@ -112,7 +126,14 @@ class Player
   end
   
   def draw(camera)
-    @standing.draw_rot(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Player, @body.a)
+    if @dir == :left then
+      offs_x = -25
+      factor = 1.0
+    else
+      offs_x = 25
+      factor = -1.0
+    end
+    @cur_image.draw_rot(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Player, @body.a, 0.5, 0.5, factor)
   end
   
 end

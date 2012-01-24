@@ -62,7 +62,7 @@ class GameWindow < Gosu::Window
     CP_SUBSTEPS.times do
 
       # ... control stuff that affects physics ...
-      @player.update((button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
+      @player.update(Gosu::milliseconds,(button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
 
       @space.step(@dt)
     end
