@@ -34,9 +34,6 @@
   - - 196
     - 438
     - media/dirtblocks.png
-  - - 0
-    - 60
-    - media/dirtblocks.png
   - - 128.0
     - 193.0
     - media/dirtblocks.png
@@ -57,5 +54,8 @@
     - media/dirtblocks.png
   - - 63.0
     - 153.0
+    - media/dirtblocks.png
+  - - 1.0
+    - 116.0
     - media/dirtblocks.png
 :Meta: {}
