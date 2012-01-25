@@ -12,6 +12,15 @@ Usage
 3. Run "bundle install" to get gosu and chipmunk. You may need to install some of *their* dependencies manually
 4. Run "ruby platformer.rb" to play
 
+Controls
+--------
+
+* Left and Right arrow keys move the character left and right.
+* The Up arrow key jumps
+* Ctrl+E goes into editing mode
+* In editing mode, left click destroys a platform and right click creates one.
+* If you change the platform configuration at all, Escape will exit the game, saving the modified level to levels/sandbox.yml
+
 Credits
 -------
 
