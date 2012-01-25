@@ -18,7 +18,7 @@ Controls
 * Left and Right arrow keys move the character left and right.
 * The Up arrow key jumps
 * Ctrl+E goes into editing mode
-* In editing mode, left click destroys a platform and right click creates one.
+* In editing mode, left click creates a platform and right click destroys one.
 * If you change the platform configuration at all, Escape will exit the game, saving the modified level to levels/sandbox.yml
 
 Credits
