@@ -24,6 +24,7 @@ class Player
 
     mass = @standing.height * @standing.width / 200
     @body = CP::Body.new(mass, CP::INFINITY)
+    @body.object = self # user-defined object is this Player
     @body.p = CP::Vec2.new(x, y)
     @body.v_limit = PLAYER_MAX_V
     shape = CP::Shape::Circle.new(@body, 25.0, CP::Vec2.new(0.0,0.0))
