@@ -15,6 +15,9 @@ class Player
     # init direction he's facing
     @facing_dir = :right
 
+    # init wow sound for jumps
+    @wow = Gosu::Sample.new(window, "#{SOUNDS_DIR}/wow.wav")
+
     # Load all animation frames
     @standing, @walk1, @walk2, @jump =
       *Gosu::Image.load_tiles(window, "#{IMAGES_DIR}/player.png", 50, 50, false)
@@ -113,6 +116,7 @@ class Player
       end
     end
     if up_pressed && !Player.off_ground
+      @wow.play(0.5, 1.4)
       go_up
     end
 
