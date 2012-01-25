@@ -75,9 +75,9 @@ class GameWindow < Gosu::Window
     @backgrounds.each {|b| b.draw(@camera) }
     @platforms.each {|p| p.draw(@camera) }
     @player.draw(@camera)
-    @mouse.draw(mouse_x, mouse_y)
     if @editing_mode
       @font.draw("Editing Mode On", 10, 10, ZOrder::HUD, 1.0, 1.0, 0xffffff00)
+      @mouse.draw(mouse_x, mouse_y)
     end
   end
 
