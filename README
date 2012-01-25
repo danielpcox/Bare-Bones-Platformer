@@ -1,4 +1,4 @@
 A little bare-bones platformer written in Ruby using the Gosu and Chipmunk gems.
 Images jacked from the Gosu examples.
 
-copy levels/sandbox.yml.example to levels/sandbox.yml to for the thing to work, at the moment.
+copy levels/sandbox.yml.example to levels/sandbox.yml for the thing to work, at the moment.
