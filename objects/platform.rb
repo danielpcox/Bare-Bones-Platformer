@@ -12,6 +12,7 @@ class Platform
     #@body = CP::Body.new(mass, CP.moment_for_poly(mass, shape_array, CP::Vec2.new(0,0)))
     @body = CP::Body.new_static()
     @body.p = CP::Vec2.new(x, y)
+    @body.object = self # set user-definable object field to be this Platform object
     shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(0,0))
     shape.collision_type = :platform
 
