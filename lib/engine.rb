@@ -95,13 +95,14 @@ class GameWindow < Gosu::Window
   def update_camera
     @camera.parax = @player.body.p.x
     @camera.paray = @player.body.p.y
-    if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
-      @camera.x = 0
-    elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
-      @camera.x = WORLD_WIDTH - SCREEN_WIDTH
-    else
-      @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
-    end
+    #if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
+      #@camera.x = 0
+    #elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
+      #@camera.x = WORLD_WIDTH - SCREEN_WIDTH
+    #else
+      #@camera.x = @player.body.p.x - SCREEN_WIDTH / 2
+    #end
+    @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
 
     if (@player.body.p.y - SCREEN_HEIGHT / 2 < 0)
       @camera.y = 0
