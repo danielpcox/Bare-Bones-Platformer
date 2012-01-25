@@ -5,6 +5,7 @@ require 'yaml'
 #   - Platform
 #   - Walls
 # - :Meta
+#   - player_pos
 #   - background
 #   - world_width
 #   - world_height

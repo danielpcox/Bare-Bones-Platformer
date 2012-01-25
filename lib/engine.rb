@@ -17,6 +17,7 @@ class GameWindow < Gosu::Window
     super SCREEN_WIDTH, SCREEN_HEIGHT, false
     self.caption = "Project Fantastic"
     @background_image = Gosu::Image.new(self, "media/background.png", true)
+    @font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
     # Time increment over which to apply a physics step
     @dt = (1.0/60.0)
@@ -30,27 +31,18 @@ class GameWindow < Gosu::Window
     @camera = Camera.new(0,0)
 
     # create walls
-    #Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
     Walls.new(self, WORLD_WIDTH, WORLD_HEIGHT)
+
+    # create player
+    @player = Player.new(self, 0, 0)
+
 
     @level = Level.new
 
     # create platforms
     @platforms = Array.new
-    # DEBUG : create a bunch of platforms
-=begin
-    20.times do 
-      pspec = [self, 50+rand(900), 50+rand(700), 'media/dirtblocks.png']
-      platform = Platform.new(*pspec)
-      @platforms << platform
-      @level.add_platform(*pspec[1..3])
-    end
-=end
     @level.load(self, "levels/sandbox.yml")
-    @platforms << Platform.new(self, 0, 60, 'media/dirtblocks.png')
 
-    @player = Player.new(self, 0, 0)
-    @left = @right = @jump = false
   end
 
   def update
@@ -77,6 +69,7 @@ class GameWindow < Gosu::Window
 
       # ... control stuff that affects physics ...
       @player.update(Gosu::milliseconds,(button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
+      @shape_pos = @space.point_query_first(CP::Vec2.new(mouse_x, mouse_y), CP::ALL_LAYERS, CP::NO_GROUP)
 
       @space.step(@dt)
     end
@@ -86,6 +79,7 @@ class GameWindow < Gosu::Window
     @background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
     @platforms.each {|p| p.draw(@camera) }
     @player.draw(@camera)
+    @font.draw("Object Position: #{@shape_pos.to_s}", 10, 10, ZOrder::HUD, 1.0, 1.0, 0xffffff00)
   end
 
   # Escape closes the game
