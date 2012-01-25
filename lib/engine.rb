@@ -13,10 +13,10 @@ require './lib/mouse'
 include Utility
 
 class GameWindow < Gosu::Window
-  attr_accessor :space, :platforms, :background_image
+  attr_accessor :space, :platforms
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false
-    self.caption = "Project Fantastic"
+    self.caption = "Bare Bones Platformer"
     @background_image = Gosu::Image.new(self, "media/background.png", true)
     @font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
@@ -25,10 +25,9 @@ class GameWindow < Gosu::Window
 
     # Chipmunk space setup
     @space = CP::Space.new
-    #@space.gravity = Vec2.new(0.0, 9.8)
-    @space.gravity = Vec2.new(0.0, 19.6)
+    @space.gravity = Vec2.new(0.0, 19.6) # twice "normal" gravity
 
-    # camera setup
+    # camera init
     @camera = Camera.new(0,0)
 
     # create walls
@@ -40,24 +39,24 @@ class GameWindow < Gosu::Window
     # setup mouse cursor
     @mouse = Mouse.new(self)
 
-    @level = Level.new
 
-    # create platforms
+    # create platforms array and load in stored level
     @platforms = Array.new
+    @level = Level.new
     @level.load(self, "levels/sandbox.yml") # loads the platforms into @platforms
 
   end
 
   def update
-    # for each main update, we actually step the physics engine several times
+    # (for each main update, we actually step the physics engine several (CP_SUBSTEPS) times)
 
     # ... control stuff that doesn't directly affect physics ...
-    update_camera
 
+    update_camera
+    # turns on and off and implements editing mode
     editing_mode_checks
 
     CP_SUBSTEPS.times do
-
       # ... control stuff that affects physics ...
       @player.update(Gosu::milliseconds,(button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
 
@@ -84,7 +83,7 @@ class GameWindow < Gosu::Window
   end
 
   private
-  ### helpful functions ##
+  ### helpful functions ###
   
   def update_camera
     if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
@@ -128,6 +127,7 @@ class GameWindow < Gosu::Window
       elsif !(button_down? Gosu::MsRight)
         @still_clicking_right = false
       end
+
       # create platforms with left mouse click
       if (button_down? Gosu::MsLeft) && !@still_clicking_left
         platform_spec = [mouse_in_world.x, mouse_in_world.y, "media/dirtblocks.png"]
