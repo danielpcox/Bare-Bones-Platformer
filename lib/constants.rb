@@ -8,6 +8,10 @@ WORLD_HEIGHT = 768
 CP_SUBSTEPS = 6
 MASS_DIVIDER = 200
 
+# camera constants
+#CAMERA_BEHAVIOR = :stop_at_world_edge # or :free
+CAMERA_BEHAVIOR = :free
+
 # player constants
 PLAYER_MAX_V = 75.0
 ANIM_DIVISOR = 175
