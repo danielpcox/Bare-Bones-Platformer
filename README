@@ -1,6 +1,7 @@
 = Bare Bones Platformer =
 A little bare-bones platformer written in Ruby using the Gosu and Chipmunk gems.
 Images jacked from the Gosu examples.
+Written using gosu 0.7.41, chipmunk 5.3.4.5, and ruby 1.9.3p0.
 
 == Usage ==
 1. Copy levels/sandbox.yml.example to levels/sandbox.yml for the thing to work, at the moment.
