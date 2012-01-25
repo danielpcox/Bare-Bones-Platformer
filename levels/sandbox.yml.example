@@ -10,9 +10,6 @@
   - - 912
     - 67
     - dirtblocks.png
-  - - 677
-    - 371
-    - dirtblocks.png
   - - 172
     - 578
     - dirtblocks.png
@@ -58,4 +55,19 @@
   - - 1.0
     - 116.0
     - dirtblocks.png
+  - - 660.0
+    - 622.0
+    - dirtblocks.png
+  - - 688.9710950970251
+    - 396.0
+    - dirtblocks.png
+  :Backgrounds:
+  - - 0
+    - 0
+    - background.png
+    - 1
+  - - 200
+    - 400
+    - vine.png
+    - 2
 :Meta: {}
