@@ -1,8 +1,8 @@
 # creates a single platform
 class Platform
-  def initialize(window, x, y, image_loc = "media/dirtblocks.png")
+  def initialize(window, x, y, image_filename = "dirtblocks.png")
     space = window.space
-    @tileset = Gosu::Image.load_tiles(window, image_loc, 60, 60, true)
+    @tileset = Gosu::Image.load_tiles(window, "#{IMAGES_DIR}/#{image_filename}", 60, 60, true)
 
     h = @tileset[0].height
     w = @tileset[0].width

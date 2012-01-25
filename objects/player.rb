@@ -19,7 +19,7 @@ class Player
 
     # Load all animation frames
     @standing, @walk1, @walk2, @jump =
-      *Gosu::Image.load_tiles(window, "media/player.png", 50, 50, false)
+      *Gosu::Image.load_tiles(window, "#{IMAGES_DIR}/player.png", 50, 50, false)
     @cur_image = @standing
 
     mass = @standing.height * @standing.width / 200

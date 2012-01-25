@@ -17,7 +17,7 @@ class GameWindow < Gosu::Window
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false
     self.caption = "Bare Bones Platformer"
-    @background_image = Gosu::Image.new(self, "media/background.png", true)
+    @background_image = Gosu::Image.new(self, "#{IMAGES_DIR}/background.png", true)
     @font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
     # Time increment over which to apply a physics step
@@ -130,7 +130,7 @@ class GameWindow < Gosu::Window
 
       # create platforms with left mouse click
       if (button_down? Gosu::MsLeft) && !@still_clicking_left
-        platform_spec = [mouse_in_world.x, mouse_in_world.y, "media/dirtblocks.png"]
+        platform_spec = [mouse_in_world.x, mouse_in_world.y, "dirtblocks.png"]
         @platforms << Platform.new(self, *platform_spec)
         @level.hash[:Objects][:Platforms] << platform_spec
         @level_edited = true
