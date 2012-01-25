@@ -8,10 +8,11 @@ require './objects/platform'
 require './lib/constants'
 require './lib/utility'
 require './lib/camera'
+require './lib/level'
 include Utility
 
 class GameWindow < Gosu::Window
-  attr_accessor :space, :background_image
+  attr_accessor :space, :platforms, :background_image
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false
     self.caption = "Project Fantastic"
@@ -32,13 +33,20 @@ class GameWindow < Gosu::Window
     #Walls.new(self, SCREEN_WIDTH, SCREEN_HEIGHT)
     Walls.new(self, WORLD_WIDTH, WORLD_HEIGHT)
 
-    @platforms = Array.new
+    @level = Level.new
 
+    # create platforms
+    @platforms = Array.new
     # DEBUG : create a bunch of platforms
+=begin
     20.times do 
-      platform = Platform.new(self, 50+rand(900), 50+rand(700), 'media/dirtblocks.png')
+      pspec = [self, 50+rand(900), 50+rand(700), 'media/dirtblocks.png']
+      platform = Platform.new(*pspec)
       @platforms << platform
+      @level.add_platform(*pspec[1..3])
     end
+=end
+    @level.load(self, "levels/sandbox.yml")
     @platforms << Platform.new(self, 0, 60, 'media/dirtblocks.png')
 
     @player = Player.new(self, 0, 0)

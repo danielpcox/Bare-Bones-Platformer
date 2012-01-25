@@ -19,6 +19,10 @@ class Platform
     space.add_shape(shape)
   end
 
+  def add_to_world
+
+  end
+
   def draw(camera)
     @tileset[0].draw(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Objects)
   end
