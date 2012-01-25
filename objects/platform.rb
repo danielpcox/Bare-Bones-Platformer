@@ -1,6 +1,7 @@
 # creates a single platform
 class Platform
   def initialize(window, x, y, image_filename = "dirtblocks.png")
+    @image_filename = image_filename
     space = window.space
     
     # TODO : make my own platforms with a single image
@@ -20,5 +21,9 @@ class Platform
 
   def draw(camera)
     @tileset[0].draw(*camera.world_to_screen(CP::Vec2.new(@body.p.x, @body.p.y)).to_a, ZOrder::Objects)
+  end
+
+  def to_a
+    [@body.p.x.to_i, @body.p.y.to_i, @image_filename]
   end
 end

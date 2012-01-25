@@ -18,7 +18,7 @@ class Level
 
   def initialize
     @hash = {
-      :Objects => {:Platforms => Array.new},
+      :Objects => {:Platforms => Array.new, :Backgrounds => Array.new},
       :Meta => {}
     }
   end
@@ -32,6 +32,13 @@ class Level
     @hash[:Objects][:Platforms].each do |p|
       window.platforms << Platform.new(window, *p)
     end
+
+    # create background objects based on specs in @hash
+    @hash[:Objects][:Backgrounds].each do |b|
+      window.backgrounds << Background.new(window, *b)
+    end
+    #window.backgrounds << Background.new(window, 0, 0, "background.png", ZOrder::ParallaxFar)
+    #window.backgrounds << Background.new(window, 200, 500, "vine.png", ZOrder::ParallaxNear)
   end
 
   def save(filename)
@@ -40,8 +47,12 @@ class Level
     end
   end
 
-  def add_platform(x,y,image_loc)
-    @hash[:Objects][:Platforms] << [x,y,image_loc]
+  def add_platform(platform)
+    @hash[:Objects][:Platforms] << platform.to_a
+  end
+
+  def add_background(background)
+    @hash[:Objects][:Backgrounds] << background.to_a
   end
 
 end

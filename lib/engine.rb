@@ -4,6 +4,7 @@ require 'chipmunk'
 require './objects/player'
 require './objects/walls'
 require './objects/platform'
+require './objects/background'
 
 require './lib/constants'
 require './lib/utility'
@@ -13,12 +14,15 @@ require './lib/mouse'
 include Utility
 
 class GameWindow < Gosu::Window
-  attr_accessor :space, :platforms
+  attr_accessor :space, :platforms, :backgrounds
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false
     self.caption = "Bare Bones Platformer"
-    @background_image = Gosu::Image.new(self, "#{IMAGES_DIR}/background.png", true)
+    #@background_image = Gosu::Image.new(self, "#{BACKGROUNDS_DIR}/background.png", true)
     @font = Gosu::Font.new(self, Gosu::default_font_name, 20)
+
+    # initialize background objects array
+    @backgrounds = Array.new
 
     # Time increment over which to apply a physics step
     @dt = (1.0/60.0)
@@ -40,10 +44,12 @@ class GameWindow < Gosu::Window
     @mouse = Mouse.new(self)
 
 
-    # create platforms array and load in stored level
+    # create platforms array
     @platforms = Array.new
+
+    # load level (platforms and background objects TODO : update as new things added
     @level = Level.new
-    @level.load(self, "levels/sandbox.yml") # loads the platforms into @platforms
+    @level.load(self, "levels/sandbox.yml")
 
   end
 
@@ -65,7 +71,8 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    @background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
+    #@background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
+    @backgrounds.each {|b| b.draw(@camera) }
     @platforms.each {|p| p.draw(@camera) }
     @player.draw(@camera)
     @mouse.draw(mouse_x, mouse_y)
@@ -86,6 +93,8 @@ class GameWindow < Gosu::Window
   ### helpful functions ###
   
   def update_camera
+    @camera.parax = @player.body.p.x
+    @camera.paray = @player.body.p.y
     if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
       @camera.x = 0
     elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
@@ -132,7 +141,8 @@ class GameWindow < Gosu::Window
       if (button_down? Gosu::MsLeft) && !@still_clicking_left
         platform_spec = [mouse_in_world.x, mouse_in_world.y, "dirtblocks.png"]
         @platforms << Platform.new(self, *platform_spec)
-        @level.hash[:Objects][:Platforms] << platform_spec
+        #@level.hash[:Objects][:Platforms] << platform_spec
+        @level.add_platform(@platforms.last)
         @level_edited = true
         @still_clicking_left = true
       elsif !(button_down? Gosu::MsLeft)

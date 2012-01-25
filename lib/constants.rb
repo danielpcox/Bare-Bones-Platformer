@@ -1,7 +1,7 @@
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-WORLD_WIDTH = 1024
+WORLD_WIDTH = 1600
 WORLD_HEIGHT = 768
 
 # physics constants
@@ -22,6 +22,7 @@ MEDIA_DIR = "media"
 IMAGES_DIR = "#{MEDIA_DIR}/images"
 SOUNDS_DIR = "#{MEDIA_DIR}/sounds"
 MUSIC_DIR = "#{MEDIA_DIR}/music"
+BACKGROUNDS_DIR = "#{IMAGES_DIR}/backgrounds"
 
 module ZOrder
   Background, ParallaxFar, ParallaxNear, Objects, Player, ParallaxObstruct, HUD = *0..6
