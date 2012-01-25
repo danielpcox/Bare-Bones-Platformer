@@ -1,0 +1,11 @@
+GEM
+  specs:
+    chipmunk (5.3.4.5)
+    gosu (0.7.41)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  chipmunk (~> 5.3.4.5)
+  gosu (~> 0.7.41)
