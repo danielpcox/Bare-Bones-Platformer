@@ -9,6 +9,7 @@ require './lib/constants'
 require './lib/utility'
 require './lib/camera'
 require './lib/level'
+require './lib/mouse'
 include Utility
 
 class GameWindow < Gosu::Window
@@ -36,6 +37,8 @@ class GameWindow < Gosu::Window
     # create player
     @player = Player.new(self, 0, 0)
 
+    # setup mouse cursor
+    @mouse = Mouse.new(self)
 
     @level = Level.new
 
@@ -69,7 +72,9 @@ class GameWindow < Gosu::Window
 
       # ... control stuff that affects physics ...
       @player.update(Gosu::milliseconds,(button_down? Gosu::KbLeft), (button_down? Gosu::KbRight), (button_down? Gosu::KbUp))
-      @shape_pos = @space.point_query_first(CP::Vec2.new(mouse_x, mouse_y), CP::ALL_LAYERS, CP::NO_GROUP)
+      mouse_in_world = @camera.screen_to_world(CP::Vec2.new(mouse_x, mouse_y))
+      @shape_pos = @space.point_query_first(mouse_in_world, CP::ALL_LAYERS, CP::NO_GROUP)
+      @shape_pos = @shape_pos.body.p.to_s if @shape_pos
 
       @space.step(@dt)
     end
@@ -79,6 +84,7 @@ class GameWindow < Gosu::Window
     @background_image.draw(*@camera.world_to_screen(CP::Vec2.new(0,0)).to_a,ZOrder::Background)
     @platforms.each {|p| p.draw(@camera) }
     @player.draw(@camera)
+    @mouse.draw(mouse_x, mouse_y)
     @font.draw("Object Position: #{@shape_pos.to_s}", 10, 10, ZOrder::HUD, 1.0, 1.0, 0xffffff00)
   end
 

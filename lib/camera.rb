@@ -10,7 +10,7 @@ class Camera
     world_coords - self.to_vec2
   end
 
-  def screen_to_world()
+  def screen_to_world(screen_coords)
     self.to_vec2 + screen_coords
   end
 
