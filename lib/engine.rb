@@ -96,7 +96,7 @@ class GameWindow < Gosu::Window
     @camera.parax = @player.body.p.x
     @camera.paray = @player.body.p.y
 
-    if CAMERA_BEHAVIOR==:clip_at_world_edge
+    if CAMERA_BEHAVIOR==:stop_at_world_edge
       if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
         @camera.x = 0
       elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
