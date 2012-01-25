@@ -29,7 +29,7 @@ class Player
     @body.v_limit = PLAYER_MAX_V
     shape = CP::Shape::Circle.new(@body, 25.0, CP::Vec2.new(0.0,0.0))
     #ground sensor:
-    ground_sensor = CP::Shape::Circle.new(@body, 2.0, CP::Vec2.new(0.0,25.0))
+    ground_sensor = CP::Shape::Circle.new(@body, 3.0, CP::Vec2.new(0.0,25.0))
     ground_sensor.sensor = true
     shape.u = 0.5 # friction coefficient
     shape.e = 0.0 # elasticity
