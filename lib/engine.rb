@@ -52,56 +52,9 @@ class GameWindow < Gosu::Window
     # for each main update, we actually step the physics engine several times
 
     # ... control stuff that doesn't directly affect physics ...
-    if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
-      @camera.x = 0
-    elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
-      @camera.x = WORLD_WIDTH - SCREEN_WIDTH
-    else
-      @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
-    end
+    update_camera
 
-    if (@player.body.p.y - SCREEN_HEIGHT / 2 < 0)
-      @camera.y = 0
-    elsif (@player.body.p.y + SCREEN_HEIGHT / 2 > WORLD_HEIGHT)
-      @camera.y = WORLD_HEIGHT - SCREEN_HEIGHT
-    else
-      @camera.y = @player.body.p.y - SCREEN_HEIGHT / 2
-    end
-
-    if (button_down? Gosu::KbLeftControl) && (button_down? Gosu::KbE) && !@e_still_pressed
-      @editing_mode = !@editing_mode
-      @e_still_pressed = true
-    elsif !(button_down? Gosu::KbE)
-      @e_still_pressed = false
-    end
-    if @editing_mode
-      # destroy platforms
-      mouse_in_world = @camera.screen_to_world(CP::Vec2.new(mouse_x, mouse_y))
-      doomed_shape = @space.point_query_first(mouse_in_world, CP::ALL_LAYERS, CP::NO_GROUP)
-      @doomed_shape_pos = doomed_shape.body.p if doomed_shape
-      if doomed_shape && !(doomed_shape.body.object.is_a? Player) && (button_down? Gosu::MsRight) && !@still_clicking_right
-        @space.remove_body(doomed_shape.body)
-        @space.remove_shape(doomed_shape)
-        @platforms.delete(doomed_shape.body.object)
-        @level.hash[:Objects][:Platforms].delete_if do |p| 
-          p[0]==doomed_shape.body.p.x && p[1]==doomed_shape.body.p.y
-        end
-        @level_edited = true
-        @still_clicking_right = true
-      elsif !(button_down? Gosu::MsRight)
-        @still_clicking_right = false
-      end
-      # create platforms
-      if (button_down? Gosu::MsLeft) && !@still_clicking_left
-        platform_spec = [mouse_in_world.x, mouse_in_world.y, "media/dirtblocks.png"]
-        @platforms << Platform.new(self, *platform_spec)
-        @level.hash[:Objects][:Platforms] << platform_spec
-        @level_edited = true
-        @still_clicking_left = true
-      elsif !(button_down? Gosu::MsLeft)
-        @still_clicking_left = false
-      end
-    end
+    editing_mode_checks
 
     CP_SUBSTEPS.times do
 
@@ -129,4 +82,63 @@ class GameWindow < Gosu::Window
       close
     end
   end
+
+  private
+  ### helpful functions ##
+  
+  def update_camera
+    if (@player.body.p.x - SCREEN_WIDTH / 2 < 0)
+      @camera.x = 0
+    elsif (@player.body.p.x + SCREEN_WIDTH / 2 > WORLD_WIDTH)
+      @camera.x = WORLD_WIDTH - SCREEN_WIDTH
+    else
+      @camera.x = @player.body.p.x - SCREEN_WIDTH / 2
+    end
+
+    if (@player.body.p.y - SCREEN_HEIGHT / 2 < 0)
+      @camera.y = 0
+    elsif (@player.body.p.y + SCREEN_HEIGHT / 2 > WORLD_HEIGHT)
+      @camera.y = WORLD_HEIGHT - SCREEN_HEIGHT
+    else
+      @camera.y = @player.body.p.y - SCREEN_HEIGHT / 2
+    end
+  end
+
+  def editing_mode_checks
+    if (button_down? Gosu::KbLeftControl) && (button_down? Gosu::KbE) && !@e_still_pressed
+      @editing_mode = !@editing_mode
+      @e_still_pressed = true
+    elsif !(button_down? Gosu::KbE)
+      @e_still_pressed = false
+    end
+    if @editing_mode
+      # destroy platforms with right mouse click
+      mouse_in_world = @camera.screen_to_world(CP::Vec2.new(mouse_x, mouse_y))
+      doomed_shape = @space.point_query_first(mouse_in_world, CP::ALL_LAYERS, CP::NO_GROUP)
+      @doomed_shape_pos = doomed_shape.body.p if doomed_shape
+      if doomed_shape && !(doomed_shape.body.object.is_a? Player) && (button_down? Gosu::MsRight) && !@still_clicking_right
+        @space.remove_body(doomed_shape.body)
+        @space.remove_shape(doomed_shape)
+        @platforms.delete(doomed_shape.body.object)
+        @level.hash[:Objects][:Platforms].delete_if do |p| 
+          p[0]==doomed_shape.body.p.x && p[1]==doomed_shape.body.p.y
+        end
+        @level_edited = true
+        @still_clicking_right = true
+      elsif !(button_down? Gosu::MsRight)
+        @still_clicking_right = false
+      end
+      # create platforms with left mouse click
+      if (button_down? Gosu::MsLeft) && !@still_clicking_left
+        platform_spec = [mouse_in_world.x, mouse_in_world.y, "media/dirtblocks.png"]
+        @platforms << Platform.new(self, *platform_spec)
+        @level.hash[:Objects][:Platforms] << platform_spec
+        @level_edited = true
+        @still_clicking_left = true
+      elsif !(button_down? Gosu::MsLeft)
+        @still_clicking_left = false
+      end
+    end
+  end
+
 end
