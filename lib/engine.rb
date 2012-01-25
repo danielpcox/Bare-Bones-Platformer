@@ -72,7 +72,7 @@ class GameWindow < Gosu::Window
     mouse_in_world = @camera.screen_to_world(CP::Vec2.new(mouse_x, mouse_y))
     doomed_shape = @space.point_query_first(mouse_in_world, CP::ALL_LAYERS, CP::NO_GROUP)
     @doomed_shape_pos = doomed_shape.body.p if doomed_shape
-    if (button_down? Gosu::MsRight) && !@still_clicking_right
+    if doomed_shape && (button_down? Gosu::MsRight) && !@still_clicking_right
       @space.remove_body(doomed_shape.body)
       @space.remove_shape(doomed_shape)
       @platforms.delete(doomed_shape.body.object)
