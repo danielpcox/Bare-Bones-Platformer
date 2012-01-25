@@ -1,4 +1,6 @@
 class Player
+  attr_reader :body
+
   @@off_ground = false
   def self.off_ground=(val)
     @@off_ground = val
@@ -7,49 +9,44 @@ class Player
     @@off_ground
   end
 
-  PLAYER_MAX_V = 75.0
-
-  attr_reader :body
-
   def initialize(window, x, y)
     space = window.space
 
-    # direction he's facing
-    @dir = :right
+    # init direction he's facing
+    @facing_dir = :right
 
     # Load all animation frames
     @standing, @walk1, @walk2, @jump =
       *Gosu::Image.load_tiles(window, "#{IMAGES_DIR}/player.png", 50, 50, false)
+
+    # the current image depends on his activity
     @cur_image = @standing
 
-    mass = @standing.height * @standing.width / 200
+    # create physical properties and add to space
+    mass = @standing.height * @standing.width / MASS_DIVIDER
     @body = CP::Body.new(mass, CP::INFINITY)
     @body.object = self # user-defined object is this Player
     @body.p = CP::Vec2.new(x, y)
     @body.v_limit = PLAYER_MAX_V
     shape = CP::Shape::Circle.new(@body, 25.0, CP::Vec2.new(0.0,0.0))
-    #ground sensor:
-    ground_sensor = CP::Shape::Circle.new(@body, 3.0, CP::Vec2.new(0.0,25.0))
-    ground_sensor.sensor = true
     shape.u = 0.5 # friction coefficient
     shape.e = 0.0 # elasticity
     shape.collision_type = :player
-    ground_sensor.collision_type = :ground_sensor 
-
     space.add_body(@body)
     space.add_shape(shape)
+
+    #ground sensor:
+    ground_sensor = CP::Shape::Circle.new(@body, 3.0, CP::Vec2.new(0.0,25.0))
+    ground_sensor.sensor = true
+    ground_sensor.collision_type = :ground_sensor 
     space.add_shape(ground_sensor)
 
-    #space.add_collision_func(:ground_sensor, :wall) do
-      #@on_ground = true
-    #end
-
-    space.add_collision_handler(:ground_sensor, :wall, CollisionHandler.new)
-    space.add_collision_handler(:ground_sensor, :platform, CollisionHandler.new)
-
+    # setup ground sensor collision handlers
+    space.add_collision_handler(:ground_sensor, :wall, GSCollisionHandler.new)
+    space.add_collision_handler(:ground_sensor, :platform, GSCollisionHandler.new)
   end
 
-  class CollisionHandler
+  class GSCollisionHandler
     def begin(a,b,arb)
       Player.off_ground = false
     end
@@ -60,37 +57,37 @@ class Player
 
   def go_left
     if Player.off_ground
-      @body.apply_force(CP::Vec2.new(-100.0, 0.0),CP::Vec2.new(0,0.0))
+      @body.apply_force(CP::Vec2.new(-IN_AIR_X_FORCE, 0.0),CP::Vec2.new(0,0.0))
     else
-      @body.apply_force(CP::Vec2.new(-200.0, 0.0),CP::Vec2.new(0,0.0))
+      @body.apply_force(CP::Vec2.new(-ON_GROUND_X_FORCE, 0.0),CP::Vec2.new(0,0.0))
     end
   end
 
   def spin_around_left
-    @body.apply_force(CP::Vec2.new(-300.0, 0.0),CP::Vec2.new(0,0.0))
+    @body.apply_force(CP::Vec2.new(-SPIN_AROUND_FORCE, 0.0),CP::Vec2.new(0,0.0))
   end
 
   def go_right
     if Player.off_ground
-      @body.apply_force(CP::Vec2.new(100.0, 0.0),CP::Vec2.new(0,0.0))
+      @body.apply_force(CP::Vec2.new(IN_AIR_X_FORCE, 0.0),CP::Vec2.new(0,0.0))
     else
-      @body.apply_force(CP::Vec2.new(200.0, 0.0),CP::Vec2.new(0,0.0))
+      @body.apply_force(CP::Vec2.new(ON_GROUND_X_FORCE, 0.0),CP::Vec2.new(0,0.0))
     end
   end
 
   def spin_around_right
-    @body.apply_force(CP::Vec2.new(300.0, 0.0),CP::Vec2.new(0,0.0))
+    @body.apply_force(CP::Vec2.new(SPIN_AROUND_FORCE, 0.0),CP::Vec2.new(0,0.0))
   end
 
   def go_up
-    @body.apply_impulse(CP::Vec2.new(0.0, -200.0), CP::Vec2.new(0,0))
+    @body.apply_impulse(CP::Vec2.new(0.0, -JUMP_IMPULSE), CP::Vec2.new(0,0))
   end
 
   def update(milliseconds, left_pressed, right_pressed, up_pressed)
-    if (@body.v.x.abs < 5.0)
+    if (@body.v.x.abs < VX_MARGIN_CUT_TO_ZERO)
       @cur_image = @standing
     else
-      @cur_image = (milliseconds / 175 % 2 == 0) ? @walk1 : @walk2
+      @cur_image = (milliseconds / ANIM_DIVISOR % 2 == 0) ? @walk1 : @walk2
     end
 
     if (Player.off_ground)
@@ -100,7 +97,7 @@ class Player
     going_left = (@body.v.x < 0)
     @body.reset_forces
     if left_pressed
-      @dir = :left
+      @facing_dir = :left
       if !going_left
         spin_around_left
       else
@@ -108,7 +105,7 @@ class Player
       end
     end
     if right_pressed
-      @dir = :right
+      @facing_dir = :right
       if going_left
         spin_around_right
       else
@@ -118,7 +115,6 @@ class Player
     if up_pressed && !Player.off_ground
       go_up
     end
-    @dir = :up if Player.off_ground
 
     if !left_pressed && !right_pressed
       @body.v += CP::Vec2.new(-@body.v.x / 100, 0.0)
@@ -127,7 +123,7 @@ class Player
   end
   
   def draw(camera)
-    if @dir == :left then
+    if @facing_dir == :left then
       factor = 1.0
     else
       factor = -1.0
