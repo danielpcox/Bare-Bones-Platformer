@@ -116,9 +116,14 @@ class Player
       end
     end
     if up_pressed && !Player.off_ground
-      @wow.play(0.5, 1.4)
+      if !@up_still_pressed
+        @wow.play(0.5, 1.4)
+        @up_still_pressed = true
+      end
       go_up
     end
+    @up_still_pressed = false if !up_pressed
+
 
     if !left_pressed && !right_pressed
       @body.v += CP::Vec2.new(-@body.v.x / 100, 0.0)
