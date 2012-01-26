@@ -17,7 +17,7 @@ class Camera
   def x_parallax_world_to_screen(world_coords, scroll_rate_offset)
     paraself = @parax ? CP::Vec2.new(@parax, @y) : CP::Vec2::ZERO
     screen_coords = world_coords - paraself
-    CP::Vec2.new(screen_coords.x / scroll_rate_offset, screen_coords.y)
+    CP::Vec2.new(screen_coords.x / (scroll_rate_offset * PARALLAX_SEPARATION_FACTOR), screen_coords.y)
   end
 
   def near_parallax(world_coords)

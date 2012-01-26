@@ -11,6 +11,7 @@ MASS_DIVIDER = 200
 # camera constants
 #CAMERA_BEHAVIOR = :stop_at_world_edge # or :free
 CAMERA_BEHAVIOR = :free
+PARALLAX_SEPARATION_FACTOR = 3.0
 
 # player constants
 PLAYER_MAX_V = 75.0
